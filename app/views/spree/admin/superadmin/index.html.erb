@@ -1,0 +1,18 @@
+<%= render 'spree/admin/shared/order_tabs', :current => 'Superadmin' %>
+
+<% if @order.payment.present? && !@order.payment.completed? %>
+  <%= form_tag admin_complete_payment_superadmin_order_path do %>
+    <fieldset>
+      <legend>Complete Payment</legend>
+      <p>
+        <%= label_tag 'Transaction ID' %><br>
+        <%= text_field_tag 'transaction_id' %>
+      </p>
+      <p class="form-buttons" data-hook="buttons">
+        <button name="button" type="submit">
+          <span>Complete Payment</span>
+        </button>
+      </p>
+    </fieldset>
+  <% end %>
+<% end %>
