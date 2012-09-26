@@ -4,8 +4,10 @@ class Spree::Admin::SuperadminController < Spree::Admin::BaseController
 
   def complete_payment
     if params[:transaction_id].present?
-      @order.payment.response_code = params[:transaction_id]
-      @order.payment.complete!
+      # update the last one b/c that's what the order checks to see if
+      # the payment has been completed (wtf?)
+      @order.payments.last.response_code = params[:transaction_id]
+      @order.payments.last.complete!
       flash[:notice] = 'Order completed!'
     else
       flash[:error] = 'Transaction ID required!'
