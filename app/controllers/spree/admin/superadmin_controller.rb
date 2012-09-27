@@ -8,6 +8,15 @@ class Spree::Admin::SuperadminController < Spree::Admin::BaseController
       # the payment has been completed (wtf?)
       @order.payments.last.response_code = params[:transaction_id]
       @order.payments.last.complete!
+      @order.reload
+
+      if @order.paid? and !@order.completed?
+        # Force a state transition b/c doing a normal
+        # state transition will create another charge
+        @order.update_attribute(:state, 'complete')
+        @order.finalize!
+      end
+
       flash[:notice] = 'Order completed!'
     else
       flash[:error] = 'Transaction ID required!'
