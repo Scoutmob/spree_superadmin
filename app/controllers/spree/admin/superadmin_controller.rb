@@ -6,10 +6,11 @@ class Spree::Admin::SuperadminController < Spree::Admin::BaseController
     if params[:transaction_id].present?
       # update the last one b/c that's what the order checks to see if
       # the payment has been completed (wtf?)
-      @order.payments.last.response_code = params[:transaction_id]
-      @order.payments.last.complete!
-      @order.reload
+      payment = @order.payments.last
+      payment.response_code = params[:transaction_id]
+      payment.complete!
 
+      @order.reload
       if @order.paid? and !@order.completed?
         # Force a state transition b/c doing a normal
         # state transition will create another charge
